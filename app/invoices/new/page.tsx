@@ -1,16 +1,22 @@
-import { createAction } from "@/app/actions";
-import { Button } from "@/components/ui/button";
+"use client";
+
+import { createInvoice, State } from "@/app/actions";
+import SubmitButton from "@/components/SubmitButton";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { useActionState } from "react";
 
-const CreateInvoice = async () => {
+const CreateInvoice = () => {
+  const initialState: State = { message: null, errors: {} };
+  const [state, formAction] = useActionState(createInvoice, initialState);
+
   return (
     <main className="flex flex-col h-full gap-6 max-w-5xl mx-auto my-4">
       <div className="flex justify-between">
         <h1 className="text-3xl font-semiboldbold">Create Invoice</h1>
       </div>
-      <form action={createAction} className="grid gap-4 max-w-xs">
+      <form action={formAction} className="grid gap-4 max-w-xs">
         <div>
           <Label htmlFor="name" className="block mb-2 font-semibold text-sm">
             Billing Name
@@ -38,8 +44,13 @@ const CreateInvoice = async () => {
           </Label>
           <Textarea id="description" name="description" />
         </div>
+        <div aria-live="polite" aria-atomic="true">
+          {state.message ? (
+            <p className="mt-2 text-sm text-red-500">{state.message}</p>
+          ) : null}
+        </div>
         <div>
-          <Button className="w-full font-semibold">Submit</Button>
+          <SubmitButton />
         </div>
       </form>
     </main>
